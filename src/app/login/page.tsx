@@ -39,9 +39,9 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center p-4 bg-[#090d16]">
       <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-slate-900/70 border border-white/10 shadow-2xl backdrop-blur-xl flex flex-col items-center text-center">
-        {/* Monogram Logo */}
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 flex items-center justify-center shadow-xl shadow-indigo-500/25 border border-indigo-400/30 mb-6">
-          <span className="text-white font-black text-3xl">B</span>
+        {/* App Logo */}
+        <div className="w-16 h-16 rounded-2xl overflow-hidden shadow-xl shadow-indigo-500/25 border border-white/20 mb-6">
+          <img src="/icons/apple-touch-icon.png" alt="Brevity" className="w-full h-full object-cover" />
         </div>
 
         <h1 className="text-2xl font-bold text-white mb-1 tracking-tight">

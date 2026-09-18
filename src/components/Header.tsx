@@ -77,8 +77,8 @@ export function Header() {
         {/* Logo and Brand */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 border border-indigo-400/30 group-hover:scale-105 transition-transform">
-              <span className="text-white font-black text-xl tracking-tight">B</span>
+            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-indigo-500/20 border border-white/15 group-hover:scale-105 transition-transform shrink-0">
+              <img src="/icons/apple-touch-icon.png" alt="Brevity" className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-bold text-white tracking-wide flex items-center gap-1.5">
