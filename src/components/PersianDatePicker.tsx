@@ -20,7 +20,6 @@ export function PersianDatePicker({ value, onChange, label, required }: PersianD
   const [month, setMonth] = useState<number>(7);
   const [day, setDay] = useState<number>(1);
 
-  // Sync internal state with prop value
   useEffect(() => {
     if (value) {
       const parts = value.split('-').map(Number);
@@ -56,8 +55,8 @@ export function PersianDatePicker({ value, onChange, label, required }: PersianD
   return (
     <div className="flex flex-col gap-1.5 text-right w-full">
       {label && (
-        <label className="text-xs font-medium text-slate-300">
-          {label} {required && <span className="text-rose-400">*</span>}
+        <label className="text-xs font-normal text-[#8C8F9B]">
+          {label} {required && <span className="text-[#C08A4E]">*</span>}
         </label>
       )}
       <div className="grid grid-cols-3 gap-2">
@@ -65,10 +64,10 @@ export function PersianDatePicker({ value, onChange, label, required }: PersianD
         <select
           value={day}
           onChange={(e) => updateDate(year, month, Number(e.target.value))}
-          className="bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 transition-colors"
+          className="bg-[#12151C] border border-[rgba(237,234,227,0.1)] rounded px-3 py-2 text-xs text-[#EDEAE3] focus:outline-none focus:border-[#C08A4E] transition-colors"
         >
           {days.map((d) => (
-            <option key={d} value={d} className="bg-slate-900 text-white">
+            <option key={d} value={d} className="bg-[#1B1F29] text-[#EDEAE3]">
               {toPersianDigits(d)}
             </option>
           ))}
@@ -83,10 +82,10 @@ export function PersianDatePicker({ value, onChange, label, required }: PersianD
             const validDay = day > currentMaxDays ? currentMaxDays : day;
             updateDate(year, m, validDay);
           }}
-          className="bg-slate-900/90 border border-white/10 rounded-xl px-2 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 transition-colors"
+          className="bg-[#12151C] border border-[rgba(237,234,227,0.1)] rounded px-2 py-2 text-xs text-[#EDEAE3] focus:outline-none focus:border-[#C08A4E] transition-colors"
         >
           {PERSIAN_MONTHS.map((mName, idx) => (
-            <option key={idx + 1} value={idx + 1} className="bg-slate-900 text-white">
+            <option key={idx + 1} value={idx + 1} className="bg-[#1B1F29] text-[#EDEAE3]">
               {mName}
             </option>
           ))}
@@ -96,10 +95,10 @@ export function PersianDatePicker({ value, onChange, label, required }: PersianD
         <select
           value={year}
           onChange={(e) => updateDate(Number(e.target.value), month, day)}
-          className="bg-slate-900/90 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500 transition-colors"
+          className="bg-[#12151C] border border-[rgba(237,234,227,0.1)] rounded px-3 py-2 text-xs text-[#EDEAE3] focus:outline-none focus:border-[#C08A4E] transition-colors"
         >
           {years.map((y) => (
-            <option key={y} value={y} className="bg-slate-900 text-white">
+            <option key={y} value={y} className="bg-[#1B1F29] text-[#EDEAE3]">
               {toPersianDigits(y)}
             </option>
           ))}

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Assignment } from '@/lib/types';
 import { formatToJalaali, toPersianDigits, getTehranDate } from '@/lib/time';
-import { CheckCircle, Circle, Clock, BookOpen, AlertTriangle } from 'lucide-react';
+import { Check, Clock } from 'lucide-react';
 
 interface AssignmentListProps {
   assignments: Assignment[];
@@ -37,23 +37,21 @@ export function AssignmentList({ assignments, onToggleDone }: AssignmentListProp
 
     if (diffHours < 0) {
       return (
-        <span className="flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30">
-          <AlertTriangle className="w-3 h-3" />
+        <span className="text-[10px] font-normal px-1.5 py-0.5 rounded border border-[rgba(237,234,227,0.15)] text-[#8C8F9B]">
           مهلت گذشته
         </span>
       );
     }
     if (diffHours <= 24) {
       return (
-        <span className="flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse">
-          <Clock className="w-3 h-3" />
+        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border border-[#C08A4E]/30 text-[#C08A4E]">
           کمتر از ۲۴ ساعت
         </span>
       );
     }
     if (diffHours <= 48) {
       return (
-        <span className="text-[11px] font-medium px-2 py-0.5 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-500/30">
+        <span className="text-[10px] font-light px-1.5 py-0.5 rounded border border-[rgba(237,234,227,0.08)] text-[#8C8F9B]">
           فردا
         </span>
       );
@@ -62,39 +60,45 @@ export function AssignmentList({ assignments, onToggleDone }: AssignmentListProp
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-2 p-1 bg-slate-900/70 border border-white/5 rounded-xl w-fit">
+    <div className="flex flex-col gap-3">
+      {/* Filter Tabs — Editorial Subtle Switch */}
+      <div className="flex items-center gap-4 border-b border-[rgba(237,234,227,0.08)] pb-1">
         <button
           onClick={() => setFilter('pending')}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+          className={`pb-1 text-xs transition-colors flex items-center gap-1.5 ${
             filter === 'pending'
-              ? 'bg-indigo-600 text-white shadow-md'
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'text-[#C08A4E] font-black border-b-2 border-[#C08A4E] -mb-[2px]'
+              : 'text-[#8C8F9B] font-light hover:text-[#EDEAE3]'
           }`}
         >
-          در انتظار انجام ({toPersianDigits(assignments.filter((a) => !a.is_done).length)})
+          <span>در انتظار انجام</span>
+          <span className="text-[10px] font-normal opacity-70">
+            ({toPersianDigits(assignments.filter((a) => !a.is_done).length)})
+          </span>
         </button>
         <button
           onClick={() => setFilter('completed')}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+          className={`pb-1 text-xs transition-colors flex items-center gap-1.5 ${
             filter === 'completed'
-              ? 'bg-indigo-600 text-white shadow-md'
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'text-[#6B8F71] font-black border-b-2 border-[#6B8F71] -mb-[2px]'
+              : 'text-[#8C8F9B] font-light hover:text-[#EDEAE3]'
           }`}
         >
-          انجام‌شده ({toPersianDigits(assignments.filter((a) => a.is_done).length)})
+          <span>انجام‌شده</span>
+          <span className="text-[10px] font-normal opacity-70">
+            ({toPersianDigits(assignments.filter((a) => a.is_done).length)})
+          </span>
         </button>
       </div>
 
       {/* Assignments List */}
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2">
         {sorted.length === 0 ? (
-          <div className="p-8 text-center bg-slate-900/40 border border-white/5 rounded-2xl">
-            <p className="text-sm text-slate-400">
+          <div className="p-8 border border-[rgba(237,234,227,0.06)] bg-[#1B1F29] rounded-lg text-center">
+            <p className="text-xs font-light text-[#8C8F9B]">
               {filter === 'pending'
-                ? 'آفرین! هیچ تکلیف انجام‌نشده‌ای نداری 👏'
-                : 'هنوز تکلیفی در لیست انجام‌شده‌ها نیست.'}
+                ? 'تکلیفی در انتظار انجام وجود ندارد.'
+                : 'هنوز تکلیفی به پایان نرسیده است.'}
             </p>
           </div>
         ) : (
@@ -110,30 +114,31 @@ export function AssignmentList({ assignments, onToggleDone }: AssignmentListProp
             return (
               <div
                 key={assignment.id}
-                className={`flex items-start sm:items-center justify-between p-4 rounded-2xl border transition-all ${
+                className={`p-3.5 sm:p-4 rounded-lg border transition-colors flex items-start justify-between gap-3 ${
                   assignment.is_done
-                    ? 'bg-slate-900/30 border-white/5 opacity-60'
-                    : 'bg-slate-900/60 border-white/5 hover:border-indigo-500/30'
+                    ? 'bg-[#1B1F29]/40 border-[rgba(237,234,227,0.04)] opacity-60'
+                    : 'bg-[#1B1F29] border-[rgba(237,234,227,0.08)]'
                 }`}
               >
                 <div className="flex items-start gap-3">
+                  {/* Flat geometric checkbox */}
                   <button
                     onClick={() => handleToggle(assignment.id, assignment.is_done)}
                     disabled={isProcessing}
-                    className="mt-0.5 text-slate-400 hover:text-emerald-400 transition-colors"
+                    className={`mt-0.5 w-4 h-4 rounded border flex items-center justify-center transition-colors shrink-0 ${
+                      assignment.is_done
+                        ? 'bg-[#6B8F71] border-[#6B8F71] text-[#12151C]'
+                        : 'border-[rgba(237,234,227,0.2)] hover:border-[#C08A4E]'
+                    }`}
                   >
-                    {assignment.is_done ? (
-                      <CheckCircle className="w-5 h-5 text-emerald-400 fill-emerald-500/20" />
-                    ) : (
-                      <Circle className="w-5 h-5" />
-                    )}
+                    {assignment.is_done && <Check className="w-3 h-3 stroke-[3]" />}
                   </button>
 
                   <div className="flex flex-col gap-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h4
-                        className={`text-sm sm:text-base font-bold text-white ${
-                          assignment.is_done ? 'line-through text-slate-400' : ''
+                        className={`text-sm font-semibold tracking-tight ${
+                          assignment.is_done ? 'line-through text-[#8C8F9B]' : 'text-[#EDEAE3]'
                         }`}
                       >
                         {assignment.title}
@@ -141,27 +146,21 @@ export function AssignmentList({ assignments, onToggleDone }: AssignmentListProp
                       {!assignment.is_done && getDeadlineBadge(assignment.due_at)}
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
-                      {assignment.course ? (
-                        <span className="flex items-center gap-1 font-medium text-slate-300">
-                          <span
-                            className="w-2 h-2 rounded-full"
-                            style={{ backgroundColor: assignment.course.color || '#6366f1' }}
-                          />
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-[#8C8F9B]">
+                      {assignment.course && (
+                        <span className="font-normal text-[#EDEAE3]">
                           {assignment.course.name}
                         </span>
-                      ) : (
-                        <span className="text-slate-500">عمومی / آزاد</span>
                       )}
 
-                      <span className="flex items-center gap-1 text-slate-300">
-                        <Clock className="w-3.5 h-3.5 text-indigo-400" />
+                      <span className="font-light text-[#8C8F9B] flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-[#8C8F9B]" />
                         {toPersianDigits(shamsiDue)} — {dueClock}
                       </span>
                     </div>
 
                     {assignment.notes && (
-                      <p className="text-xs text-slate-400 mt-1 bg-white/5 p-2 rounded-lg">
+                      <p className="text-xs font-light text-[#8C8F9B] mt-1 border-r border-[rgba(237,234,227,0.15)] pr-2">
                         {assignment.notes}
                       </p>
                     )}

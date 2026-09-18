@@ -72,14 +72,21 @@
 
 :root {
   --font-dana: 'Dana', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --background: #090d16;
-  --foreground: #f8fafc;
+  --bg-ink: #12151C;
+  --surface-panel: #1B1F29;
+  --text-main: #EDEAE3;
+  --text-muted: #8C8F9B;
+  --accent-brass: #C08A4E;
+  --accent-brass-hover: #AA773F;
+  --state-done: #6B8F71;
+  --border-hairline: rgba(237, 234, 227, 0.08);
+  --border-hairline-subtle: rgba(237, 234, 227, 0.04);
 }
 
 body {
   font-family: var(--font-dana);
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--bg-ink);
+  color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
@@ -92,7 +99,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Ensure React Spectrum components use Dana font */
+/* React Spectrum overrides */
 .spectrum-provider-root,
 .spectrum-provider-root *,
 .spectrum,
@@ -100,38 +107,34 @@ body {
   font-family: var(--font-dana) !important;
 }
 
-/* Glassmorphism utility */
-.glass-card {
-  background: rgba(18, 24, 38, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Editorial Flat Panel */
+.editorial-panel {
+  background-color: var(--surface-panel);
+  border: 1px solid var(--border-hairline);
 }
 
-.glass-card-hover {
-  transition: all 0.2s ease-in-out;
+.editorial-hairline-b {
+  border-bottom: 1px solid var(--border-hairline);
 }
 
-.glass-card-hover:hover {
-  transform: translateY(-2px);
-  border-color: rgba(99, 102, 241, 0.4);
-  box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.15);
+.editorial-hairline-t {
+  border-top: 1px solid var(--border-hairline);
 }
 
-/* Custom scrollbars */
+/* Custom quiet scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 9999px;
+  background: rgba(237, 234, 227, 0.12);
+  border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(237, 234, 227, 0.22);
 }
 
 /* iOS Safe Area Utilities */
@@ -142,4 +145,3 @@ body {
 .pb-safe {
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px) !important;
 }
-

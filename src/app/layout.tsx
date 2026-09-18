@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#090d16",
+  themeColor: "#12151C",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -44,7 +44,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="min-h-screen bg-[#090d16] text-slate-100 antialiased overflow-x-hidden">
+      <body className="min-h-screen bg-[#12151C] text-[#EDEAE3] antialiased overflow-x-hidden">
         <SpectrumClientProvider>
           {children}
         </SpectrumClientProvider>

@@ -6,7 +6,7 @@ import { Header } from '@/components/Header';
 import { Term } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
 import { formatToJalaali, toPersianDigits } from '@/lib/time';
-import { Plus, Calendar, CheckCircle2, XCircle, Trash2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 
 export default function TermsPage() {
   const [terms, setTerms] = useState<Term[]>([]);
@@ -43,111 +43,92 @@ export default function TermsPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090d16]">
+    <div className="min-h-screen flex flex-col bg-[#12151C]">
       <Header />
-      <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
+      <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-8">
         
-        {/* Page Title & Add Button */}
-        <div className="flex items-center justify-between">
+        {/* Header bar */}
+        <div className="flex items-baseline justify-between border-b border-[rgba(237,234,227,0.08)] pb-3">
           <div className="flex flex-col">
-            <h1 className="text-xl sm:text-2xl font-black text-white">
-              مدیریت ترم‌های تحصیلی
+            <h1 className="text-xl font-bold text-[#EDEAE3]">
+              ترم‌های تحصیلی
             </h1>
-            <p className="text-xs text-slate-400 mt-0.5">
-              ترم‌های فعال به سیستم مشخص می‌کنند کدام برنامه‌های کلاسی نوتیف دریافت کنند.
+            <p className="text-xs font-light text-[#8C8F9B] mt-0.5">
+              تنها برای جلسات کلاسی ترم‌های فعال نوتیفیکیشن ارسال خواهد شد.
             </p>
           </div>
 
           <Link
             href="/terms/new"
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#C08A4E] hover:bg-[#AA773F] text-[#12151C] text-xs font-bold transition-colors"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             <span>ترم جدید</span>
           </Link>
         </div>
 
-        {/* Terms List */}
+        {/* Terms Grid */}
         {loading ? (
-          <div className="text-center p-12 text-slate-400 text-sm">
-            در حال بارگذاری ترم‌ها...
+          <div className="text-center p-12 text-[#8C8F9B] text-xs font-light">
+            در حال دریافت اطلاعات...
           </div>
         ) : terms.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-12 bg-slate-900/40 border border-white/5 rounded-3xl text-center">
-            <Calendar className="w-12 h-12 text-slate-600 mb-3" />
-            <h3 className="text-base font-bold text-white mb-1">هنوز هیچ ترمی ثبت نشده است</h3>
-            <p className="text-xs text-slate-400 mb-6">
-              برای شروع، اولین ترم خود را ایجاد کنید.
+          <div className="p-12 border border-[rgba(237,234,227,0.06)] bg-[#1B1F29] rounded-lg text-center">
+            <p className="text-xs font-light text-[#8C8F9B] mb-4">
+              هنوز ترمی ثبت نشده است.
             </p>
             <Link
               href="/terms/new"
-              className="px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold"
+              className="px-4 py-2 rounded bg-[#C08A4E] text-[#12151C] text-xs font-bold"
             >
               افزودن اولین ترم
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {terms.map((term) => (
               <div
                 key={term.id}
-                className="p-5 rounded-2xl bg-slate-900/60 border border-white/5 hover:border-indigo-500/30 transition-all flex flex-col justify-between gap-4"
+                className="p-5 rounded-lg bg-[#1B1F29] border border-[rgba(237,234,227,0.08)] flex flex-col justify-between gap-4"
               >
                 <div className="flex items-start justify-between">
-                  <div className="flex flex-col">
+                  <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-white">
+                      <h3 className="text-base font-bold text-[#EDEAE3]">
                         {term.name}
                       </h3>
                       {term.is_active ? (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        <span className="text-[10px] font-medium px-1.5 py-0.2 rounded border border-[#C08A4E]/30 text-[#C08A4E]">
                           فعال
                         </span>
                       ) : (
-                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-500/20 text-slate-400 border border-slate-500/30">
+                        <span className="text-[10px] font-light px-1.5 py-0.2 rounded border border-[rgba(237,234,227,0.1)] text-[#8C8F9B]">
                           غیرفعال
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-slate-400 mt-2 flex items-center gap-2">
-                      <span>بازه زمانی:</span>
-                      <span className="text-slate-200 font-medium">
-                        {toPersianDigits(formatToJalaali(term.start_date))} تا {toPersianDigits(formatToJalaali(term.end_date))}
-                      </span>
+                    <div className="text-xs font-light text-[#8C8F9B] mt-1">
+                      {toPersianDigits(formatToJalaali(term.start_date))} تا {toPersianDigits(formatToJalaali(term.end_date))}
                     </div>
                   </div>
 
                   <button
                     onClick={() => deleteTerm(term.id)}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                    className="p-1 text-[#8C8F9B] hover:text-[#EDEAE3] transition-colors"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-white/5">
-                  <span className="text-[11px] text-slate-500">
-                    وضعیت نوتیفیکیشن
+                <div className="flex items-center justify-between pt-3 border-t border-[rgba(237,234,227,0.08)]">
+                  <span className="text-[11px] font-light text-[#8C8F9B]">
+                    وضعیت ارسال نوتیفیکیشن
                   </span>
                   <button
                     onClick={() => toggleTermActive(term.id, term.is_active)}
-                    className={`text-xs px-3 py-1.5 rounded-xl font-semibold transition-colors flex items-center gap-1.5 ${
-                      term.is_active
-                        ? 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30'
-                        : 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30'
-                    }`}
+                    className="text-xs font-normal text-[#8C8F9B] hover:text-[#EDEAE3] transition-colors"
                   >
-                    {term.is_active ? (
-                      <>
-                        <XCircle className="w-3.5 h-3.5" />
-                        <span>غیرفعال کردن</span>
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>فعال کردن</span>
-                      </>
-                    )}
+                    {term.is_active ? 'غیرفعال کردن' : 'فعال کردن'}
                   </button>
                 </div>
               </div>

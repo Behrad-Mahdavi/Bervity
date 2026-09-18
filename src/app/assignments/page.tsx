@@ -6,7 +6,7 @@ import { Header } from '@/components/Header';
 import { AssignmentList } from '@/components/AssignmentList';
 import { Assignment } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
-import { Plus, CheckSquare } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 export default function AssignmentsPage() {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
@@ -33,7 +33,6 @@ export default function AssignmentsPage() {
   }, []);
 
   const handleToggleDone = async (id: string, currentStatus: boolean) => {
-    // Optimistic UI update
     setAssignments((prev) =>
       prev.map((a) => (a.id === id ? { ...a, is_done: !currentStatus } : a))
     );
@@ -45,40 +44,39 @@ export default function AssignmentsPage() {
     });
 
     if (!res.ok) {
-      // Revert if error
       fetchAssignments();
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090d16]">
+    <div className="min-h-screen flex flex-col bg-[#12151C]">
       <Header />
-      <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
+      <main className="flex-1 max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-8">
         
-        {/* Page Title & Add Button */}
-        <div className="flex items-center justify-between">
+        {/* Top bar */}
+        <div className="flex items-baseline justify-between border-b border-[rgba(237,234,227,0.08)] pb-3">
           <div className="flex flex-col">
-            <h1 className="text-xl sm:text-2xl font-black text-white">
-              مدیریت تکالیف و پروژه‌ها
+            <h1 className="text-xl font-bold text-[#EDEAE3]">
+              تکالیف و پروژه‌ها
             </h1>
-            <p className="text-xs text-slate-400 mt-0.5">
-              تکالیف با موعد تحویل — ۲۴ ساعت قبل و در ددلاین‌های فوری یادآوری تلگرام ارسال می‌شود.
+            <p className="text-xs font-light text-[#8C8F9B] mt-0.5">
+              یادآوری ۲۴ ساعت قبل و در موعدهای فوری به تلگرام ارسال می‌شود.
             </p>
           </div>
 
           <Link
             href="/assignments/new"
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded bg-[#C08A4E] hover:bg-[#AA773F] text-[#12151C] text-xs font-bold transition-colors"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             <span>تکلیف جدید</span>
           </Link>
         </div>
 
         {/* Assignments List */}
         {loading ? (
-          <div className="text-center p-12 text-slate-400 text-sm">
-            در حال بارگذاری تکالیف...
+          <div className="text-center p-12 text-[#8C8F9B] text-xs font-light">
+            در حال دریافت تکالیف...
           </div>
         ) : (
           <AssignmentList

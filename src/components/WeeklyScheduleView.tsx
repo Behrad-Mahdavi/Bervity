@@ -3,12 +3,12 @@
 import React, { useState } from 'react';
 import { Course, CourseSession, PERSIAN_DAYS } from '@/lib/types';
 import { toPersianDigits, formatTime, getPersianDayOfWeek, getTehranDate } from '@/lib/time';
-import { Clock, MapPin, AlertCircle, CheckCircle2, Ban } from 'lucide-react';
+import { MapPin, Ban, RotateCcw } from 'lucide-react';
 
 interface WeeklyScheduleViewProps {
   courses: Course[];
-  todayDateStr: string; // YYYY-MM-DD
-  cancelledCourseIds: string[]; // IDs of courses cancelled for today
+  todayDateStr: string;
+  cancelledCourseIds: string[];
   onToggleCancelToday?: (courseId: string, isCurrentlyCancelled: boolean) => Promise<void>;
 }
 
@@ -22,7 +22,6 @@ export function WeeklyScheduleView({
   const [selectedDay, setSelectedDay] = useState<number>(currentPersianDay);
   const [togglingCourseId, setTogglingCourseId] = useState<string | null>(null);
 
-  // Flatten sessions with their parent course info
   const daySessions = courses.flatMap((course) => {
     return (course.sessions || [])
       .filter((s) => s.day_of_week === selectedDay)
@@ -44,9 +43,9 @@ export function WeeklyScheduleView({
   };
 
   return (
-    <div className="flex flex-col gap-5">
-      {/* Day Selector Tabs */}
-      <div className="grid grid-cols-7 gap-1.5 sm:gap-2 p-1.5 bg-slate-900/70 border border-white/5 rounded-2xl">
+    <div className="flex flex-col gap-4">
+      {/* Day Selector — Editorial Horizontal Row */}
+      <div className="flex items-center justify-between border-b border-[rgba(237,234,227,0.08)] pb-1 overflow-x-auto">
         {PERSIAN_DAYS.map((day) => {
           const isSelected = selectedDay === day.id;
           const isToday = currentPersianDay === day.id;
@@ -55,33 +54,33 @@ export function WeeklyScheduleView({
             <button
               key={day.id}
               onClick={() => setSelectedDay(day.id)}
-              className={`flex flex-col items-center justify-center py-2 sm:py-3 px-1 rounded-xl transition-all relative ${
+              className={`flex flex-col items-center py-2 px-3 sm:px-4 rounded-none transition-colors relative ${
                 isSelected
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                  ? 'text-[#C08A4E]'
+                  : 'text-[#8C8F9B] hover:text-[#EDEAE3]'
               }`}
             >
-              {isToday && (
-                <span className="absolute -top-1 right-1 flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <div className="flex items-center gap-1.5">
+                <span className={`text-xs sm:text-sm ${isSelected ? 'font-black' : 'font-medium'}`}>
+                  {day.name}
                 </span>
+                {isToday && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C08A4E]"></span>
+                )}
+              </div>
+              {isSelected && (
+                <div className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#C08A4E]"></div>
               )}
-              <span className="text-xs sm:text-sm font-bold">{day.name}</span>
-              <span className="text-[10px] opacity-70 mt-0.5">
-                {isToday ? 'امروز' : ''}
-              </span>
             </button>
           );
         })}
       </div>
 
-      {/* Class Sessions List for Selected Day */}
-      <div className="flex flex-col gap-3">
+      {/* Class Sessions List */}
+      <div className="flex flex-col gap-2.5">
         {daySessions.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-10 bg-slate-900/40 border border-white/5 rounded-2xl text-center">
-            <Clock className="w-10 h-10 text-slate-600 mb-2" />
-            <p className="text-sm text-slate-400">
+          <div className="p-10 border border-[rgba(237,234,227,0.06)] bg-[#1B1F29] rounded-lg text-center">
+            <p className="text-xs font-light text-[#8C8F9B]">
               هیچ کلاسی برای {PERSIAN_DAYS[selectedDay].name} ثبت نشده است.
             </p>
           </div>
@@ -93,64 +92,66 @@ export function WeeklyScheduleView({
             return (
               <div
                 key={session.id}
-                className={`flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-5 rounded-2xl border transition-all ${
+                className={`p-4 sm:p-5 rounded-lg border transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
                   isCancelledToday
-                    ? 'bg-rose-950/20 border-rose-500/30 opacity-70'
-                    : 'bg-slate-900/60 border-white/5 hover:border-indigo-500/30'
+                    ? 'bg-[#1B1F29]/40 border-[rgba(237,234,227,0.04)] opacity-50'
+                    : 'bg-[#1B1F29] border-[rgba(237,234,227,0.08)]'
                 }`}
               >
-                <div className="flex items-center gap-3.5 mb-3 sm:mb-0">
-                  <div
-                    className="w-3.5 h-12 rounded-full shrink-0 shadow-sm"
-                    style={{ backgroundColor: course.color || '#6366f1' }}
-                  />
-                  <div className="flex flex-col gap-1">
+                {/* Left: Time contrast (Extreme Weight Contrast: 900 vs 300) */}
+                <div className="flex items-baseline gap-4 sm:gap-6">
+                  <div className="flex items-baseline gap-1 shrink-0">
+                    <span className="text-xl sm:text-2xl font-black text-[#EDEAE3] tracking-tight">
+                      {toPersianDigits(formatTime(session.start_time))}
+                    </span>
+                    <span className="text-xs font-light text-[#8C8F9B] px-1">تا</span>
+                    <span className="text-sm sm:text-base font-normal text-[#8C8F9B]">
+                      {toPersianDigits(formatTime(session.end_time))}
+                    </span>
+                  </div>
+
+                  <div className="h-4 w-[1px] bg-[rgba(237,234,227,0.1)] hidden sm:block"></div>
+
+                  <div className="flex flex-col gap-0.5">
                     <div className="flex items-center gap-2">
-                      <h4 className="text-base font-bold text-white">
+                      <span className="text-sm sm:text-base font-semibold text-[#EDEAE3]">
                         {course.name}
-                      </h4>
-                      {isCancelledToday && (
-                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                          کنسل شده
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
-                      <span className="flex items-center gap-1 font-semibold text-slate-200">
-                        <Clock className="w-3.5 h-3.5 text-indigo-400" />
-                        {toPersianDigits(formatTime(session.start_time))} تا{' '}
-                        {toPersianDigits(formatTime(session.end_time))}
                       </span>
-                      {course.location && (
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                          {course.location}
+                      {isCancelledToday && (
+                        <span className="text-[10px] font-medium px-1.5 py-0.2 rounded border border-[rgba(237,234,227,0.15)] text-[#8C8F9B]">
+                          لغو شده
                         </span>
                       )}
                     </div>
+                    {course.location && (
+                      <div className="flex items-center gap-1 text-xs font-light text-[#8C8F9B]">
+                        <MapPin className="w-3 h-3 text-[#8C8F9B]" />
+                        <span>{course.location}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Cancel/Uncancel Action for today's classes */}
+                {/* Right: Actions */}
                 {isToday && onToggleCancelToday && (
                   <button
                     onClick={() => handleCancelClick(course.id, isCancelledToday)}
                     disabled={isProcessing}
-                    className={`text-xs px-3.5 py-2 rounded-xl font-medium transition-all flex items-center gap-1.5 self-end sm:self-center ${
+                    className={`text-xs px-3 py-1.5 rounded border transition-colors self-end sm:self-auto flex items-center gap-1.5 font-light ${
                       isCancelledToday
-                        ? 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30'
-                        : 'bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20'
+                        ? 'border-[rgba(237,234,227,0.15)] text-[#EDEAE3] hover:border-[#EDEAE3]'
+                        : 'border-[rgba(237,234,227,0.08)] text-[#8C8F9B] hover:text-[#EDEAE3]'
                     }`}
                   >
                     {isCancelledToday ? (
                       <>
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>برقراری مجدد کلاس</span>
+                        <RotateCcw className="w-3 h-3 text-[#C08A4E]" />
+                        <span>برقراری مجدد</span>
                       </>
                     ) : (
                       <>
-                        <Ban className="w-3.5 h-3.5" />
-                        <span>لغو کلاس امروز</span>
+                        <Ban className="w-3 h-3" />
+                        <span>لغو امروز</span>
                       </>
                     )}
                   </button>

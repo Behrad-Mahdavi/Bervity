@@ -10,8 +10,6 @@ import {
   CheckSquare, 
   Send, 
   LogOut, 
-  Bell, 
-  PlusCircle,
   Menu,
   X
 } from 'lucide-react';
@@ -46,7 +44,7 @@ export function Header() {
       const res = await fetch('/api/telegram/test', { method: 'POST' });
       const data = await res.json();
       if (data.success) {
-        alert('پیام تستی با موفقیت به اکانت تلگرام شما ارسال شد! 🎉');
+        alert('پیام تستی با موفقیت به اکانت تلگرام شما ارسال شد.');
       } else {
         alert(`خطا در ارسال پیام تلگرام: ${data.error || 'بررسی کنید توکن و چت‌آیدی ست شده باشند.'}`);
       }
@@ -71,59 +69,53 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#090d16]/85 backdrop-blur-xl pt-safe transition-all">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-[#12151C] border-b border-[rgba(237,234,227,0.08)] pt-safe transition-colors">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         
-        {/* Logo and Brand */}
+        {/* Brand */}
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-lg shadow-indigo-500/20 border border-white/15 group-hover:scale-105 transition-transform shrink-0">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg overflow-hidden border border-[rgba(237,234,227,0.12)] shrink-0">
               <img src="/icons/apple-touch-icon.png" alt="Brevity" className="w-full h-full object-cover" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-bold text-white tracking-wide flex items-center gap-1.5">
+            <div className="flex items-baseline gap-2">
+              <span className="text-base font-bold tracking-tight text-[#EDEAE3]">
                 Brevity
-                <span className="text-[10px] uppercase font-semibold px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                  Study
-                </span>
               </span>
-              <span className="text-[11px] text-slate-400 hidden sm:inline">
-                یادآور هوشمند کلاس و تکالیف
+              <span className="text-[11px] font-light text-[#8C8F9B] hidden sm:inline tracking-wider">
+                دفترچه تحصیلی
               </span>
             </div>
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-2xl border border-white/5">
+        <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((item) => {
-            const Icon = item.icon;
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs transition-colors ${
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+                    ? 'text-[#C08A4E] font-bold bg-[#1B1F29] border border-[rgba(237,234,227,0.08)]'
+                    : 'text-[#8C8F9B] font-normal hover:text-[#EDEAE3]'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{item.name}</span>
+                {item.name}
               </Link>
             );
           })}
         </nav>
 
-        {/* Live Date Badge & Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Live Date, Time & Tools */}
+        <div className="flex items-center gap-3">
           {shamsiDate && (
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-slate-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>{toPersianDigits(shamsiDate)}</span>
-              <span className="text-slate-500">|</span>
-              <span className="font-semibold text-indigo-300">{currentTime}</span>
+            <div className="hidden sm:flex items-baseline gap-2 text-xs text-[#8C8F9B]">
+              <span className="font-light">{toPersianDigits(shamsiDate)}</span>
+              <span className="text-[rgba(237,234,227,0.2)]">/</span>
+              <span className="font-black text-[#EDEAE3]">{currentTime}</span>
             </div>
           )}
 
@@ -132,9 +124,9 @@ export function Header() {
             onClick={handleTestTelegram}
             disabled={testingTelegram}
             title="تست ارسال پیام به تلگرام"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 border border-sky-500/30 text-sky-300 text-xs font-medium transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[rgba(237,234,227,0.08)] bg-[#1B1F29] hover:border-[#C08A4E]/40 text-[#8C8F9B] hover:text-[#EDEAE3] text-xs font-normal transition-colors disabled:opacity-50"
           >
-            <Send className={`w-3.5 h-3.5 ${testingTelegram ? 'animate-spin' : ''}`} />
+            <Send className={`w-3 h-3 text-[#C08A4E] ${testingTelegram ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">تست تلگرام</span>
           </button>
 
@@ -142,40 +134,39 @@ export function Header() {
           <button
             onClick={handleLogout}
             title="خروج از حساب"
-            className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all"
+            className="p-1.5 rounded-lg text-[#8C8F9B] hover:text-[#EDEAE3] transition-colors"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-3.5 h-3.5" />
           </button>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-xl text-slate-300 bg-white/5 border border-white/10"
+            className="md:hidden p-1.5 rounded-lg text-[#8C8F9B] hover:text-[#EDEAE3] border border-[rgba(237,234,227,0.08)] bg-[#1B1F29]"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-white/10 bg-[#090d16]/95 backdrop-blur-2xl p-4 flex flex-col gap-2">
+        <div className="md:hidden border-t border-[rgba(237,234,227,0.08)] bg-[#12151C] p-3 flex flex-col gap-1">
           {navLinks.map((item) => {
-            const Icon = item.icon;
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                className={`px-3 py-2 rounded-lg text-xs transition-colors flex items-center justify-between ${
                   isActive
-                    ? 'bg-indigo-600 text-white'
-                    : 'text-slate-300 hover:bg-white/5'
+                    ? 'text-[#C08A4E] font-bold bg-[#1B1F29]'
+                    : 'text-[#8C8F9B] font-normal hover:text-[#EDEAE3]'
                 }`}
               >
-                <Icon className="w-4 h-4" />
                 <span>{item.name}</span>
+                {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#C08A4E]"></span>}
               </Link>
             );
           })}

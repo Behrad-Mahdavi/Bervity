@@ -17,7 +17,7 @@ export function SpectrumClientProvider({ children }: { children: React.ReactNode
       locale="fa-IR"
       UNSAFE_className="spectrum-provider-root"
     >
-      <div dir="rtl" className="w-full min-h-screen text-slate-100 font-dana">
+      <div dir="rtl" className="w-full min-h-screen text-[#EDEAE3] bg-[#12151C] font-dana">
         {children}
       </div>
     </Provider>

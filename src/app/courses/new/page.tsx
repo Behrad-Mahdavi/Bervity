@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Header } from '@/components/Header';
 import { Term, PERSIAN_DAYS } from '@/lib/types';
 import { supabase } from '@/lib/supabase';
-import { ArrowRight, Save, Plus, Trash2, Clock } from 'lucide-react';
+import { ArrowRight, Plus, Trash2 } from 'lucide-react';
 
 interface SessionInput {
   day_of_week: number;
@@ -14,23 +14,12 @@ interface SessionInput {
   end_time: string;
 }
 
-const COLOR_PRESETS = [
-  { name: 'نیلی', hex: '#6366f1' },
-  { name: 'بنفش', hex: '#a855f7' },
-  { name: 'زمردی', hex: '#10b981' },
-  { name: 'آبی آسمانی', hex: '#0ea5e9' },
-  { name: 'کهربایی', hex: '#f59e0b' },
-  { name: 'رز', hex: '#f43f5e' },
-  { name: 'فیروزه‌ای', hex: '#14b8a6' },
-];
-
 export default function NewCoursePage() {
   const router = useRouter();
   const [terms, setTerms] = useState<Term[]>([]);
   const [selectedTermId, setSelectedTermId] = useState('');
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
-  const [color, setColor] = useState('#6366f1');
   const [sessions, setSessions] = useState<SessionInput[]>([
     { day_of_week: 0, start_time: '08:00', end_time: '09:30' },
   ]);
@@ -78,20 +67,19 @@ export default function NewCoursePage() {
       return;
     }
     if (!selectedTermId) {
-      setError('لطفاً یک ترم انتخاب کنید (در صورت نبود، ابتدا ترم بسازید).');
+      setError('لطفاً یک ترم انتخاب کنید.');
       return;
     }
     setLoading(true);
     setError('');
 
-    // 1. Insert course
     const { data: courseData, error: courseError } = await supabase
       .from('courses')
       .insert({
         term_id: selectedTermId,
         name: name.trim(),
         location: location.trim() || null,
-        color: color,
+        color: '#C08A4E',
       })
       .select()
       .single();
@@ -102,7 +90,6 @@ export default function NewCoursePage() {
       return;
     }
 
-    // 2. Insert sessions
     const sessionsPayload = sessions.map((s) => ({
       course_id: courseData.id,
       day_of_week: s.day_of_week,
@@ -124,122 +111,95 @@ export default function NewCoursePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#090d16]">
+    <div className="min-h-screen flex flex-col bg-[#12151C]">
       <Header />
-      <main className="flex-1 max-w-2xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
-        <div className="flex items-center gap-3">
+      <main className="flex-1 max-w-xl w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
+        <div className="flex items-center gap-3 border-b border-[rgba(237,234,227,0.08)] pb-3">
           <Link
             href="/courses"
-            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 transition-colors"
+            className="p-1.5 rounded text-[#8C8F9B] hover:text-[#EDEAE3] transition-colors"
           >
-            <ArrowRight className="w-5 h-5" />
+            <ArrowRight className="w-4 h-4" />
           </Link>
           <div className="flex flex-col">
-            <h1 className="text-xl sm:text-2xl font-black text-white">
-              ثبت درس و جلسات هفتگی
+            <h1 className="text-lg font-bold text-[#EDEAE3]">
+              ثبت درس جدید
             </h1>
-            <p className="text-xs text-slate-400">
-              مشخصات درس، مکان و زمان‌بندی روزهای برگزاری را وارد کنید.
+            <p className="text-xs font-light text-[#8C8F9B]">
+              نام درس، مکان و جلسات هفتگی را وارد کنید.
             </p>
           </div>
         </div>
 
         {error && (
-          <div className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs">
+          <div className="p-3 rounded border border-rose-500/30 bg-rose-950/20 text-rose-300 text-xs font-light">
             {error}
           </div>
         )}
 
         <form
           onSubmit={handleSubmit}
-          className="p-6 rounded-3xl bg-slate-900/60 border border-white/10 flex flex-col gap-5 backdrop-blur-xl"
+          className="p-6 rounded-lg bg-[#1B1F29] border border-[rgba(237,234,227,0.08)] flex flex-col gap-5"
         >
           {/* Term selector */}
           <div className="flex flex-col gap-1.5 text-right">
-            <label className="text-xs font-semibold text-slate-300">
-              ترم مربوطه <span className="text-rose-400">*</span>
+            <label className="text-xs font-normal text-[#8C8F9B]">
+              ترم تحصیلی <span className="text-[#C08A4E]">*</span>
             </label>
-            {terms.length === 0 ? (
-              <p className="text-xs text-amber-400">
-                ترمی یافت نشد. ابتدا از منوی ترم‌ها، یک ترم ایجاد کنید.
-              </p>
-            ) : (
-              <select
-                value={selectedTermId}
-                onChange={(e) => setSelectedTermId(e.target.value)}
-                className="px-4 py-3 rounded-xl bg-slate-950/80 border border-white/10 text-white text-sm focus:outline-none focus:border-indigo-500"
-              >
-                {terms.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name} {t.is_active ? '(ترم فعال)' : ''}
-                  </option>
-                ))}
-              </select>
-            )}
+            <select
+              value={selectedTermId}
+              onChange={(e) => setSelectedTermId(e.target.value)}
+              className="px-3 py-2.5 rounded bg-[#12151C] border border-[rgba(237,234,227,0.1)] text-[#EDEAE3] text-xs focus:outline-none focus:border-[#C08A4E]"
+            >
+              {terms.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name} {t.is_active ? '(فعال)' : ''}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Course Name */}
           <div className="flex flex-col gap-1.5 text-right">
-            <label className="text-xs font-semibold text-slate-300">
-              نام درس <span className="text-rose-400">*</span>
+            <label className="text-xs font-normal text-[#8C8F9B]">
+              نام درس <span className="text-[#C08A4E]">*</span>
             </label>
             <input
               type="text"
               required
-              placeholder="مثلاً: هوش مصنوعی"
+              placeholder="مثلاً: طراحی الگوریتم"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="px-4 py-3 rounded-xl bg-slate-950/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+              className="px-3 py-2.5 rounded bg-[#12151C] border border-[rgba(237,234,227,0.1)] text-[#EDEAE3] placeholder-[#8C8F9B]/50 text-xs focus:outline-none focus:border-[#C08A4E] transition-colors"
             />
           </div>
 
           {/* Location */}
           <div className="flex flex-col gap-1.5 text-right">
-            <label className="text-xs font-semibold text-slate-300">
-              مکان یا کلاس (اختیاری)
+            <label className="text-xs font-normal text-[#8C8F9B]">
+              مکان کلاس (اختیاری)
             </label>
             <input
               type="text"
-              placeholder="مثلاً: دانشکده کامپیوتر، کلاس ۲۰۴"
+              placeholder="مثلاً: کلاس ۱۰۲"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="px-4 py-3 rounded-xl bg-slate-950/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+              className="px-3 py-2.5 rounded bg-[#12151C] border border-[rgba(237,234,227,0.1)] text-[#EDEAE3] placeholder-[#8C8F9B]/50 text-xs focus:outline-none focus:border-[#C08A4E] transition-colors"
             />
           </div>
 
-          {/* Color tag presets */}
-          <div className="flex flex-col gap-2 text-right">
-            <label className="text-xs font-semibold text-slate-300">
-              رنگ شناسه درس
-            </label>
-            <div className="flex flex-wrap gap-2.5">
-              {COLOR_PRESETS.map((c) => (
-                <button
-                  type="button"
-                  key={c.hex}
-                  onClick={() => setColor(c.hex)}
-                  className={`w-8 h-8 rounded-full transition-transform flex items-center justify-center ${
-                    color === c.hex ? 'scale-125 ring-2 ring-white' : 'opacity-80 hover:opacity-100'
-                  }`}
-                  style={{ backgroundColor: c.hex }}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Weekly Sessions Builder */}
-          <div className="pt-3 border-t border-white/10 flex flex-col gap-3">
+          {/* Weekly Sessions */}
+          <div className="pt-3 border-t border-[rgba(237,234,227,0.08)] flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
-                <Clock className="w-4 h-4 text-indigo-400" />
+              <label className="text-xs font-semibold text-[#EDEAE3]">
                 جلسات هفتگی کلاس
               </label>
               <button
                 type="button"
                 onClick={addSession}
-                className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1"
+                className="text-xs text-[#C08A4E] hover:underline font-normal flex items-center gap-1"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-3 h-3" />
                 <span>افزودن جلسه دیگر</span>
               </button>
             </div>
@@ -247,14 +207,13 @@ export default function NewCoursePage() {
             {sessions.map((sess, idx) => (
               <div
                 key={idx}
-                className="p-3.5 rounded-2xl bg-slate-950/70 border border-white/5 flex flex-col sm:flex-row items-center gap-3"
+                className="p-3 rounded border border-[rgba(237,234,227,0.08)] bg-[#12151C] flex flex-col sm:flex-row items-center gap-2.5"
               >
-                {/* Day selector */}
                 <div className="w-full sm:w-1/3">
                   <select
                     value={sess.day_of_week}
                     onChange={(e) => updateSession(idx, 'day_of_week', Number(e.target.value))}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-white/10 text-xs text-white"
+                    className="w-full px-2.5 py-1.5 rounded bg-[#1B1F29] border border-[rgba(237,234,227,0.1)] text-xs text-[#EDEAE3]"
                   >
                     {PERSIAN_DAYS.map((d) => (
                       <option key={d.id} value={d.id}>
@@ -264,29 +223,28 @@ export default function NewCoursePage() {
                   </select>
                 </div>
 
-                {/* Time pickers */}
                 <div className="w-full sm:w-2/3 flex items-center gap-2">
                   <input
                     type="time"
                     value={sess.start_time}
                     onChange={(e) => updateSession(idx, 'start_time', e.target.value)}
-                    className="w-1/2 px-3 py-2 rounded-xl bg-slate-900 border border-white/10 text-xs text-white"
+                    className="w-1/2 px-2.5 py-1.5 rounded bg-[#1B1F29] border border-[rgba(237,234,227,0.1)] text-xs text-[#EDEAE3]"
                   />
-                  <span className="text-slate-500 text-xs">تا</span>
+                  <span className="text-[#8C8F9B] text-xs font-light">تا</span>
                   <input
                     type="time"
                     value={sess.end_time}
                     onChange={(e) => updateSession(idx, 'end_time', e.target.value)}
-                    className="w-1/2 px-3 py-2 rounded-xl bg-slate-900 border border-white/10 text-xs text-white"
+                    className="w-1/2 px-2.5 py-1.5 rounded bg-[#1B1F29] border border-[rgba(237,234,227,0.1)] text-xs text-[#EDEAE3]"
                   />
 
                   {sessions.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeSession(idx)}
-                      className="p-2 text-slate-500 hover:text-rose-400 transition-colors"
+                      className="p-1 text-[#8C8F9B] hover:text-[#EDEAE3] transition-colors"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
@@ -297,10 +255,9 @@ export default function NewCoursePage() {
           <button
             type="submit"
             disabled={loading || terms.length === 0}
-            className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all disabled:opacity-50 mt-3"
+            className="w-full py-2.5 px-4 rounded bg-[#C08A4E] hover:bg-[#AA773F] text-[#12151C] font-bold text-xs transition-colors disabled:opacity-50 mt-2"
           >
-            <Save className="w-4 h-4" />
-            <span>{loading ? 'در حال ذخیره...' : 'ثبت درس و برنامه'}</span>
+            {loading ? 'در حال ذخیره...' : 'ذخیره درس و برنامه'}
           </button>
         </form>
       </main>
