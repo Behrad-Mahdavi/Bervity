@@ -68,3 +68,11 @@ create index if not exists idx_course_sessions_day_time on course_sessions (day_
 create index if not exists idx_assignments_due_done on assignments (due_at, is_done);
 create index if not exists idx_notification_log_lookup on notification_log (ref_type, ref_id, trigger_date);
 create index if not exists idx_cancellations_lookup on course_cancellations (course_id, cancelled_date);
+
+-- غیرفعال کردن RLS برای استفاده شخصی و تک‌کاربره
+alter table terms disable row level security;
+alter table courses disable row level security;
+alter table course_sessions disable row level security;
+alter table course_cancellations disable row level security;
+alter table assignments disable row level security;
+alter table notification_log disable row level security;
