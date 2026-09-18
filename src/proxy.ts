@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const appPassword = process.env.APP_PASSWORD;
 
@@ -13,8 +13,7 @@ export function middleware(request: NextRequest) {
   // Public paths that do not require auth
   if (
     pathname.startsWith("/login") ||
-    pathname.startsWith("/api/cron") ||
-    pathname.startsWith("/api/auth") ||
+    pathname.startsWith("/api") ||
     pathname.startsWith("/icons") ||
     pathname.startsWith("/fonts") ||
     pathname === "/manifest.json" ||
