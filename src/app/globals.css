@@ -133,3 +133,13 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
 }
+
+/* iOS Safe Area Utilities */
+.pt-safe {
+  padding-top: max(env(safe-area-inset-top, 0px), 14px) !important;
+}
+
+.pb-safe {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px) !important;
+}
+
