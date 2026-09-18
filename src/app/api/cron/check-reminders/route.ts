@@ -175,31 +175,34 @@ async function handleCron(req: NextRequest) {
         const dueShamsi = formatToJalaali(dueDate);
         const dueTime = dueDate.toLocaleTimeString("en-GB", { timeZone: "Asia/Tehran", hour: "2-digit", minute: "2-digit" });
 
-        // Case A: 24h Reminder (between 23.5h and 24.5h before due date)
-        if (minutesUntilDue > 0 && minutesUntilDue <= 24 * 60 + 15 && minutesUntilDue >= 24 * 60 - 15) {
-          const { data: existing24hLog } = await supabase
-            .from("notification_log")
-            .select("id")
-            .eq("ref_type", "assignment")
-            .eq("ref_id", assignment.id)
-            .eq("trigger_date", tehranDateStr)
-            .maybeSingle();
+        // Check if 24h/upcoming reminder was already sent for this assignment
+        const { data: existing24hLog } = await supabase
+          .from("notification_log")
+          .select("id")
+          .eq("ref_type", "assignment")
+          .eq("ref_id", assignment.id)
+          .maybeSingle();
 
-          if (!existing24hLog) {
-            const notesText = assignment.notes ? `\n📝 توضیحات: ${assignment.notes}` : "";
-            const msg = `📌 <b>یادآور تکلیف — مهلت فردا</b>\n\n📝 عنوان: <b>${assignment.title}</b>\n📚 درس: <b>${courseName}</b>\n⏳ مهلت تحویل: <b>فردا ساعت ${dueTime}</b> (${dueShamsi})${notesText}\n\n⚡ تا دیر نشده تکمیلش کن!`;
+        // Case A: Reminder for upcoming assignment within 24 hours
+        if (!existing24hLog && minutesUntilDue > 0 && minutesUntilDue <= 24 * 60 + 30) {
+          const notesText = assignment.notes ? `\n📝 توضیحات: ${assignment.notes}` : "";
+          const hoursRemaining = Math.round(minutesUntilDue / 60);
+          const timeRemainingText = minutesUntilDue > 18 * 60 
+            ? `فردا ساعت ${dueTime}` 
+            : `حدود ${hoursRemaining} ساعت دیگر (ساعت ${dueTime})`;
 
-            const tgRes = await sendTelegramMessage(msg);
-            if (tgRes.success) {
-              await supabase.from("notification_log").insert({
-                ref_type: "assignment",
-                ref_id: assignment.id,
-                trigger_date: tehranDateStr,
-              });
-              results.assignmentsNotified++;
-            } else {
-              results.errors.push(`Telegram error for assignment ${assignment.id}: ${tgRes.error}`);
-            }
+          const msg = `📌 <b>یادآور تحویل تکلیف</b>\n\n📝 عنوان: <b>${assignment.title}</b>\n📚 درس: <b>${courseName}</b>\n⏳ مهلت تحویل: <b>${timeRemainingText}</b> (${dueShamsi})${notesText}\n\n⚡ تا دیر نشده تکمیلش کن!`;
+
+          const tgRes = await sendTelegramMessage(msg);
+          if (tgRes.success) {
+            await supabase.from("notification_log").insert({
+              ref_type: "assignment",
+              ref_id: assignment.id,
+              trigger_date: tehranDateStr,
+            });
+            results.assignmentsNotified++;
+          } else {
+            results.errors.push(`Telegram error for assignment ${assignment.id}: ${tgRes.error}`);
           }
         }
 
